@@ -3,7 +3,7 @@ TARGET = uart
 all:$(TARGET)
 
 uart:uart.c
-	gcc -Wall -o $@ $< -g
+	arm-none-linux-gnueabi-gcc -Wall -o $@ $< -g -static
 
 clean:
 	rm -rf $(TARGET)
