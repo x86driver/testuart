@@ -1,0 +1,5 @@
+使用方法:
+
+./uart r 1024 從 uart 讀取 1024 bytes 到 a.bin
+./uart w c.dat 把 c.dat 寫入 uart
+
