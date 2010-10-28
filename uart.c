@@ -161,7 +161,7 @@ int main(int argc, char **argv)
 	}
 
 	uart_open("/dev/tcc-uart0");
-	uart_setup(115200);
+	uart_setup(B57600);
 
 	if (argv[1][0] == 'r')
 		read_data(atoi(argv[2]));
