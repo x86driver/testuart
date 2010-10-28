@@ -116,6 +116,8 @@ int uart_write(unsigned char *pData, int max_size)
 		ret = write(Uart_fd, pData, max_size);
 		if (ret < 0)
 			perror("write data");
+		else
+			printf("Write %d bytes done.\n", max_size);
 	}
 	return ret;
 }
@@ -129,22 +131,24 @@ void read_data(int size)
 	if (!fp)
 		perror("fopen");
 	uart_read(buf, size);
+	fwrite(buf, size, 1, fp);
 	free(buf);
 	fclose(fp);
 }
 
 void write_file(char *file)
 {
-	char *ptr = NULL;
+	unsigned char *ptr = NULL;
 	struct stat st;
 	int infd = open(file, O_RDONLY);
 	if (!infd)
 		perror("open infd");
 	fstat(infd, &st);
 	ptr = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, infd, 0);
-	if (ptr == MAP_FAILED)
+	if ((void*)ptr == MAP_FAILED)
 		perror("mmap");
 
+	uart_write(ptr, st.st_size);
 	munmap(ptr, st.st_size);
 	close(infd);
 }
