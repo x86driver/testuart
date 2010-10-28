@@ -4,6 +4,11 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/mman.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 static int Uart_fd = 0;
 
@@ -117,7 +122,7 @@ int uart_write(unsigned char *pData, int max_size)
 
 void read_data(int size)
 {
-	char *buf = malloc(size);
+	unsigned char *buf = malloc(size);
 	if (buf == NULL)
 		perror("malloc");
 	FILE *fp = fopen("a.bin", "wb");
@@ -140,7 +145,7 @@ void write_file(char *file)
 	if (ptr == MAP_FAILED)
 		perror("mmap");
 
-	mummap(ptr, st.st_size);
+	munmap(ptr, st.st_size);
 	close(infd);
 }
 
@@ -151,14 +156,15 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	int fd = uart_open("/dev/tcc-uart0");
+	uart_open("/dev/tcc-uart0");
 	uart_setup(115200);
 
 	if (argv[1][0] == 'r')
-		read_data(atoi(argv[2]);
+		read_data(atoi(argv[2]));
 	else
 		write_file(argv[2]);
 
+	uart_close();
 	return 0;
 }
 
